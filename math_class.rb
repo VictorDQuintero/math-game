@@ -1,31 +1,15 @@
-=begin 
-# Math class should have a random question definition, which prints the question. Gets user input and evaluates its truth value.
-
-class Math 
-
-  def random_question
-  # generates question
-  # saves answer to the question
-  # puts it out there
-  end
-
-  def evaluates 
-    # chomps answer
-    # evaluates user answer against saved answer
-    # saves evaluation result
-  end
-
-  # method or def for sending the evaluation to game object
-
-end 
-=end
-
-class Math
+class Math_Logic
   def random_question
     # generates and returns a question and its correct answer
+    num1 = rand(1..20)
+    num2 = rand(1..20)
+    question = "What does #{num1} plus #{num2} equal?"
+    correct_answer = num1 + num2
+    [question, correct_answer]
   end
 
   def evaluate(user_answer, correct_answer)
     # evaluates user_answer against correct_answer and returns true or false
+    user_answer == correct_answer
   end
 end
