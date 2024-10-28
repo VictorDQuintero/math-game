@@ -5,21 +5,14 @@ class Game
 
   def player_instantiation 
 
-    # Get players' names and ask for how many lives they want to have (default is three)
-
     puts "Choose a name for Player 1 \n"
     player_1_name = gets.chomp
-    # puts "Now, choose how many lives you want to have \n"
-    # player_1_lives = gets.chomp.to_i
-    # if no input provided player_1_lives = 3
+    
     @player_1 = Player.new(player_1_name) 
 
     puts "Choose a name for Player 2 \n"
     player_2_name = gets.chomp
-    # puts "Now, choose how many lives you want to have \n"
-    # player_2_lives = gets.chomp.to_i
-    # if no input provided player_2_lives = 3
-    
+       
     @player_2 = Player.new(player_2_name) 
 
 
@@ -30,71 +23,78 @@ class Game
   end
 
 
-  def turn_tracker
-    # tracks players' turns and switches players' turns
-    # Assume players is an array [player_1, player_2]
-    players = [@player_1, @player_2]
-    current_player_index = 0
+  
+    def turn_tracker(current_player)
+      self.ask_question
+      puts "#{current_player.name}: #{@question}"
     
-    # Function or loop to switch turns
-    @current_player = players[current_player_index]
-
-    do |@current_player.@lives != 0|
-    self.ask_question
-
-    self.gets_answer
-
-    self.answer_evaluation
-
-    self.players_lives_evaluation
-    
-    # After the player's turn:
-    current_player_index = (current_player_index + 1) % players.size
+     
+      self.gets_answer
+      self.answer_evaluation
+      self.players_lives_evaluation(current_player)
     end
-
-  end
+    
+    
+ 
 
   def ask_question 
-    question, @correct_answer = @math_logic.random_question
+    @question, @correct_answer = @math_logic.random_question
 
-    puts question
   end
 
   def gets_answer
-    @user_answer = gets.chomp
+    @user_answer = gets.chomp.to_i
   end
 
   def answer_evaluation
     @evaluation = @math_logic.evaluate(@user_answer, @correct_answer) 
-  end
-
-  def players_lives_evaluation 
-
-    # either player_1.update_lives(@evaluation) or player_2.update_lives(@evaluation)
-
-    @current_player.update_lives(@evaluation)
-
     
   end
 
+  def players_lives_evaluation(current_player)
+      current_player.update_lives(@evaluation)
+  end
+
   def standings_display
+    puts "#{@player_1.name}: #{@player_1.lives}/3 Vs. #{@player_2.name}: #{@player_2.lives}/3 "
+    puts "---NEW TURN---"
 
   end
 
   def game_flow
 
-    # if either players' lives != 0, continue the game
+  
+  self.player_instantiation
+  self.math_logic_instantiation
 
-    self.player_instantiation
+  players = [@player_1, @player_2]
+  current_player_index = 0
+  
 
-    self.math_logic_instantiation
+  loop do
+    current_player = players[current_player_index]
+    other_player_index = (current_player_index + 1) % players.size
+    other_player = players[other_player_index]
 
-    self.turn_tracker
+    self.turn_tracker(current_player)
+
+    if current_player.lives == 0
+      puts "#{other_player.name} wins with a score of #{other_player.lives}/3!"
+      puts "---GAME OVER---"
+      break
+    end
+    if @evaluation
+      puts "#{current_player.name}: YES! You are correct."
+    else 
+      puts "#{current_player.name}: Seriously? No."
+    end
+    self.standings_display
+    
+
+    current_player_index = (current_player_index + 1) % players.size
 
   end
 
-
-
-    
+  end    
 
 end
